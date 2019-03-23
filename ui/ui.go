@@ -22,7 +22,7 @@ func Start(cfg Config, m *model.Model, listener net.Listener) {
 		MaxHeaderBytes: 1 << 16}
 
 	http.Handle("/", indexHandler(m))
-	http.Handle("/people", peopleHandler(m))
+	http.Handle("/members", membersHandler(m))
 	http.Handle("/js/", http.FileServer(cfg.Assets))
 
 	go server.Serve(listener)
@@ -59,7 +59,7 @@ func indexHandler(m *model.Model) http.Handler {
 	})
 }
 
-func peopleHandler(m *model.Model) http.Handler {
+func membersHandler(m *model.Model) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		people, err := m.People()
 		if err != nil {

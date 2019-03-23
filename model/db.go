@@ -1,5 +1,5 @@
 package model
 
 type db interface {
-	SelectPeople() ([]*Person, error)
+	selectMembers() ([]*Member, error)
 }

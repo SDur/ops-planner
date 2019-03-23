@@ -33,18 +33,18 @@ func InitDb(cfg Config) (*pgDb, error) {
 type pgDb struct {
 	dbConn *sqlx.DB
 
-	sqlSelectPeople *sqlx.Stmt
-	sqlInsertPerson *sqlx.NamedStmt
-	sqlSelectPerson *sql.Stmt
+	sqlSelectMembers *sqlx.Stmt
+	sqlInsertMember  *sqlx.NamedStmt
+	sqlSelectMember  *sql.Stmt
 }
 
 func (p *pgDb) createTablesIfNotExist() error {
 	create_sql := `
 
-       CREATE TABLE IF NOT EXISTS people (
+       CREATE TABLE IF NOT EXISTS members (
        id SERIAL NOT NULL PRIMARY KEY,
-       first TEXT NOT NULL,
-       last TEXT NOT NULL);
+       firstname TEXT NOT NULL,
+       lastname TEXT NOT NULL);
 
     `
 	if rows, err := p.dbConn.Query(create_sql); err != nil {
@@ -57,19 +57,19 @@ func (p *pgDb) createTablesIfNotExist() error {
 
 func (p *pgDb) prepareSqlStatements() (err error) {
 
-	if p.sqlSelectPeople, err = p.dbConn.Preparex(
-		"SELECT id, first, last FROM people",
+	if p.sqlSelectMembers, err = p.dbConn.Preparex(
+		"SELECT id, firstname, lastname FROM members",
 	); err != nil {
 		return err
 	}
-	if p.sqlInsertPerson, err = p.dbConn.PrepareNamed(
-		"INSERT INTO people (first, last) VALUES (:first, :last) " +
-			"RETURNING id, first, last",
+	if p.sqlInsertMember, err = p.dbConn.PrepareNamed(
+		"INSERT INTO members (firstname, lastname) VALUES (:firstname, :lastname) " +
+			"RETURNING id, firstname, lastname",
 	); err != nil {
 		return err
 	}
-	if p.sqlSelectPerson, err = p.dbConn.Prepare(
-		"SELECT id, first, last FROM people WHERE id = $1",
+	if p.sqlSelectMember, err = p.dbConn.Prepare(
+		"SELECT id, firstname, lastname FROM members WHERE id = $1",
 	); err != nil {
 		return err
 	}
@@ -77,9 +77,9 @@ func (p *pgDb) prepareSqlStatements() (err error) {
 	return nil
 }
 
-func (p *pgDb) SelectPeople() ([]*model.Person, error) {
+func (p *pgDb) SelectMembers() ([]*model.Person, error) {
 	people := make([]*model.Person, 0)
-	if err := p.sqlSelectPeople.Select(&people); err != nil {
+	if err := p.sqlSelectMembers.Select(&people); err != nil {
 		return nil, err
 	}
 	return people, nil

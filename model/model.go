@@ -10,6 +10,6 @@ func New(db db) *Model {
 	}
 }
 
-func (m *Model) People() ([]*Person, error) {
-	return m.SelectPeople()
+func (m *Model) Members() ([]*Member, error) {
+	return m.selectMembers()
 }

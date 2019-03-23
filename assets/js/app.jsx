@@ -2,19 +2,19 @@
 // -*- JavaScript -*-
 
 
-class PersonItem extends React.Component {
+class MemberItem extends React.Component {
   render() {
     return (
       <tr>
         <td> {this.props.id}    </td>
-        <td> {this.props.first} </td>
-        <td> {this.props.last}  </td>
+        <td> {this.props.firstname} </td>
+        <td> {this.props.lastname}  </td>
       </tr>
     );
   }
 }
 
-class PeopleList extends React.Component {
+class MembersList extends React.Component {
   constructor(props) {
     super(props);
     this.state = { people: [] };
@@ -23,24 +23,24 @@ class PeopleList extends React.Component {
   componentDidMount() {
     this.serverRequest =
       axios
-        .get("/people")
+        .get("/members")
         .then((result) => {
-           this.setState({ people: result.data });
+           this.setState({ members: result.data });
         });
   }
 
   render() {
-    const people = this.state.people.map((person, i) => {
+    const members = this.state.members.map((member, i) => {
       return (
-        <PersonItem key={i} id={person.Id} first={person.First} last={person.Last} />
+        <MemberItem key={i} id={member.Id} first={member.Firstname} last={member.Lastname} />
       );
     });
 
     return (
       <div>
         <table><tbody>
-          <tr><th>Id</th><th>First</th><th>Last</th></tr>
-          {people}
+          <tr><th>Id</th><th>Firstname</th><th>Lastname</th></tr>
+          {members}
         </tbody></table>
 
       </div>
@@ -48,4 +48,4 @@ class PeopleList extends React.Component {
   }
 }
 
-ReactDOM.render( <PeopleList/>, document.querySelector("#root"));
+ReactDOM.render( <MembersList/>, document.querySelector("#root"));
