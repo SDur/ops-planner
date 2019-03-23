@@ -11,5 +11,5 @@ func New(db db) *Model {
 }
 
 func (m *Model) Members() ([]*Member, error) {
-	return m.selectMembers()
+	return m.SelectMembers()
 }

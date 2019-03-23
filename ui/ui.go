@@ -61,13 +61,13 @@ func indexHandler(m *model.Model) http.Handler {
 
 func membersHandler(m *model.Model) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		people, err := m.People()
+		members, err := m.Members()
 		if err != nil {
 			http.Error(w, "This is an error", http.StatusBadRequest)
 			return
 		}
 
-		js, err := json.Marshal(people)
+		js, err := json.Marshal(members)
 		if err != nil {
 			http.Error(w, "This is an error", http.StatusBadRequest)
 			return
