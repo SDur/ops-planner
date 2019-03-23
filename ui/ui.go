@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/grisha/gowebapp/model"
+	"github.com/SDur/ops-planner/model"
 )
 
 type Config struct {
