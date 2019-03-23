@@ -17,7 +17,7 @@ class MemberItem extends React.Component {
 class MembersList extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { people: [] };
+    this.state = { members: [] };
   }
 
   componentDidMount() {
@@ -25,6 +25,7 @@ class MembersList extends React.Component {
       axios
         .get("/members")
         .then((result) => {
+            console.log('Received members: ' + result.data);
            this.setState({ members: result.data });
         });
   }
@@ -32,7 +33,7 @@ class MembersList extends React.Component {
   render() {
     const members = this.state.members.map((member, i) => {
       return (
-        <MemberItem key={i} id={member.Id} first={member.Firstname} last={member.Lastname} />
+        <MemberItem key={i} id={member.Id} firstname={member.Firstname} lastname={member.Lastname} />
       );
     });
 
