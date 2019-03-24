@@ -14,6 +14,6 @@ func (m *Model) Members() ([]*Member, error) {
 	return m.SelectMembers()
 }
 
-func (m *Model) AddMember(newMember Member) error {
+func (m *Model) AddMember(newMember *Member) error {
 	return m.AddMember(newMember)
 }
