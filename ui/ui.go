@@ -92,7 +92,7 @@ func membersHandler(m *model.Model) http.Handler {
 			lastname := lastnames[0]
 
 			log.Println("Received new member: " + firstname + " " + lastname)
-			newMember := model.Member{
+			newMember := &model.Member{
 				Id:        3,
 				Firstname: firstname,
 				Lastname:  lastname}
