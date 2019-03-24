@@ -85,6 +85,6 @@ func (p *pgDb) SelectMembers() ([]*model.Member, error) {
 }
 
 func (p *pgDb) AddMember(newMember *model.Member) error {
-	_, e := p.dbConn.Exec("INSERT INTO members (firstname, lastname) VALUES ($1, $2)", newMember.Firstname, newMember.Lastname)
+	_, e := p.dbConn.Query("INSERT INTO members (firstname, lastname) VALUES ($1, $2)", newMember.Firstname, newMember.Lastname)
 	return e
 }
