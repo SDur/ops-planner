@@ -15,5 +15,5 @@ func (m *Model) Members() ([]*Member, error) {
 }
 
 func (m *Model) AddMember(newMember *Member) error {
-	return m.AddMember(newMember)
+	return m.InsertMember(newMember)
 }
