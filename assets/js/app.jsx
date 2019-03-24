@@ -14,6 +14,53 @@ class MemberItem extends React.Component {
   }
 }
 
+class MemberForm extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            firstname: '',
+            lastname: ''
+        };
+        this.handleFirstnameChange = this.handleFirstnameChange.bind(this);
+        this.handleLastnameChange = this.handleLastnameChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    handleFirstnameChange(event) {
+        this.setState({firstname: event.target.value});
+    }
+
+    handleLastnameChange(event) {
+        this.setState({lastname: event.target.value});
+    }
+
+    handleSubmit(event) {
+        console.info('A new member is added: ' + this.state.firstname + ' ' + this.state.lastname);
+        event.preventDefault();
+        axios
+            .post("/members", {
+                params: {
+                    firstname: this.state.firstname,
+                    lastname: this.state.lastname
+                }
+            })
+            .then((result) => {
+                console.log('Received members: ' + result.data);
+                this.setState({ members: result.data });
+            });
+    }
+
+    render() {
+        return (
+            <form onSubmit={this.handleSubmit}>
+                <input type="text" value={this.state.value} onChange={this.handleFirstnameChange} />
+                <input type="text" value={this.state.value} onChange={this.handleLastnameChange} />
+                <input type="submit" value="Submit" />
+            </form>
+        );
+    }
+}
+
 class MembersList extends React.Component {
   constructor(props) {
     super(props);
@@ -43,10 +90,21 @@ class MembersList extends React.Component {
           <tr><th>Id</th><th>Firstname</th><th>Lastname</th></tr>
           {members}
         </tbody></table>
+          <MemberForm/>
 
       </div>
     );
   }
 }
 
-ReactDOM.render( <MembersList/>, document.querySelector("#root"));
+class Container extends React.Component {
+    render() {
+        return (
+            <div>
+                <MembersList/>
+            </div>
+        );
+    }
+}
+
+ReactDOM.render( <Container/>, document.querySelector("#root"));

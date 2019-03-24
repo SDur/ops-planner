@@ -3,6 +3,7 @@ package ui
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net"
 	"net/http"
 	"time"
@@ -40,7 +41,7 @@ const indexHTML = `
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Simple Go Web App</title>
+    <title>OPSer van de dag</title>
   </head>
   <body>
     <div id='root'></div>
@@ -61,18 +62,36 @@ func indexHandler(m *model.Model) http.Handler {
 
 func membersHandler(m *model.Model) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		members, err := m.Members()
-		if err != nil {
-			http.Error(w, "This is an error", http.StatusBadRequest)
-			return
-		}
+		switch r.Method {
+		case "GET":
+			members, err := m.Members()
+			if err != nil {
+				http.Error(w, "This is an error", http.StatusBadRequest)
+				return
+			}
 
-		js, err := json.Marshal(members)
-		if err != nil {
-			http.Error(w, "This is an error", http.StatusBadRequest)
-			return
-		}
+			js, err := json.Marshal(members)
+			if err != nil {
+				http.Error(w, "This is an error", http.StatusBadRequest)
+				return
+			}
 
-		fmt.Fprintf(w, string(js))
+			fmt.Fprintf(w, string(js))
+		case "POST":
+			firstnames, ok := r.URL.Query()["firstname"]
+			lastnames, ok := r.URL.Query()["lastnames"]
+
+			if !ok || len(firstnames[0]) < 1 || len(lastnames[0]) < 0 {
+				log.Println("Url Params are incomplete or missing")
+				return
+			}
+
+			// Query()["key"] will return an array of items,
+			// we only want the single item.
+			firstname := firstnames[0]
+			lastname := lastnames[0]
+
+			log.Println("Received new member: " + firstname + " " + lastname)
+		}
 	})
 }
