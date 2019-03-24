@@ -79,7 +79,7 @@ func membersHandler(m *model.Model) http.Handler {
 			fmt.Fprintf(w, string(js))
 		case "POST":
 			firstnames, ok := r.URL.Query()["firstname"]
-			lastnames, ok := r.URL.Query()["lastnames"]
+			lastnames, ok := r.URL.Query()["lastname"]
 
 			if !ok || len(firstnames[0]) < 1 || len(lastnames[0]) < 0 {
 				log.Println("Url Params are incomplete or missing")

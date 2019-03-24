@@ -27,6 +27,7 @@ class MemberForm extends React.Component {
     }
 
     handleFirstnameChange(event) {
+        console.log('in firstname handler');
         this.setState({firstname: event.target.value});
     }
 
@@ -38,15 +39,15 @@ class MemberForm extends React.Component {
         console.info('A new member is added: ' + this.state.firstname + ' ' + this.state.lastname);
         event.preventDefault();
         axios
-            .post("/members", {
+            .post("/members", null, {
                 params: {
                     firstname: this.state.firstname,
                     lastname: this.state.lastname
                 }
             })
             .then((result) => {
-                console.log('Received members: ' + result.data);
-                this.setState({ members: result.data });
+                console.log('Result of adding member: ' + result);
+                this.setState({firstname: '', lastname: ''})
             });
     }
 
