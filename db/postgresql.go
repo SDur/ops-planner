@@ -63,8 +63,7 @@ func (p *pgDb) prepareSqlStatements() (err error) {
 		return err
 	}
 	if p.sqlInsertMember, err = p.dbConn.PrepareNamed(
-		"INSERT INTO members (firstname, lastname) VALUES (:firstname, :lastname) " +
-			"RETURNING id, firstname, lastname",
+		"INSERT INTO members (firstname, lastname) VALUES (:firstname, :lastname) RETURNING id, firstname, lastname",
 	); err != nil {
 		return err
 	}
@@ -83,4 +82,9 @@ func (p *pgDb) SelectMembers() ([]*model.Member, error) {
 		return nil, err
 	}
 	return people, nil
+}
+
+func (p *pgDb) AddMember(newMember model.Member) error {
+	_, e := p.dbConn.Exec("INSERT INTO members (firstname, lastname) VALUES ($1, $2)", newMember.Firstname, newMember.Lastname)
+	return e
 }
