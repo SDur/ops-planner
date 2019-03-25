@@ -93,7 +93,7 @@ func membersHandler(m *model.Model) http.Handler {
 
 			log.Println("Received new member: " + firstname + " " + lastname)
 			newMember := &model.Member{
-				Id:        3,
+				Id:        nil,
 				Firstname: firstname,
 				Lastname:  lastname}
 
