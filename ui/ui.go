@@ -3,6 +3,7 @@ package ui
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net"
 	"net/http"
 	"time"
@@ -62,9 +63,14 @@ func indexHandler(m *model.Model) http.Handler {
 
 func sprintsHandler(m *model.Model) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		sprint := m.CurrentSprint()
-		js, err := json.Marshal(sprint)
-		if err != nil {
+		sprint, err1 := m.CurrentSprint()
+		if err1 != nil {
+			log.Println(err1)
+			http.Error(w, "This is a db parsing error", http.StatusInternalServerError)
+			return
+		}
+		js, err2 := json.Marshal(sprint)
+		if err2 != nil {
 			http.Error(w, "This is a marshal error", http.StatusBadRequest)
 			return
 		}

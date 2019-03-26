@@ -22,6 +22,6 @@ func (m *Model) RemoveMember(id int) error {
 	return m.DeleteMember(id)
 }
 
-func (m *Model) CurrentSprint() *Sprint {
+func (m *Model) CurrentSprint() (*Sprint, error) {
 	return m.SelectCurrentSprint()
 }
