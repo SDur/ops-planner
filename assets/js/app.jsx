@@ -3,12 +3,27 @@
 
 
 class MemberItem extends React.Component {
+    constructor(props) {
+        super(props);
+        this.deleteMember = this.deleteMember.bind(this);
+    }
+
+    deleteMember() {
+        axios
+            .delete("/members", {
+                params: {
+                    id: this.props.id
+                }
+            })
+    }
+
   render() {
     return (
       <tr>
         <td> {this.props.id}    </td>
         <td> {this.props.firstname} </td>
         <td> {this.props.lastname}  </td>
+        <td> <button onClick={this.deleteMember}>Del</button> </td>
       </tr>
     );
   }
@@ -88,7 +103,7 @@ class MembersList extends React.Component {
     return (
       <div>
         <table><tbody>
-          <tr><th>Id</th><th>Firstname</th><th>Lastname</th></tr>
+          <tr><th>Id</th><th>Firstname</th><th>Lastname</th><th>Delete</th></tr>
           {members}
         </tbody></table>
           <MemberForm/>

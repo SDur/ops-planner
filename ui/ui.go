@@ -101,6 +101,17 @@ func membersHandler(m *model.Model) http.Handler {
 			if err != nil {
 				log.Println("Something went wrong")
 			}
+		case "DELETE":
+			ids, ok := r.URL.Query()["id"]
+			if !ok || len(ids[0]) < 1 {
+				log.Println("Url Params are incomplete or missing")
+				return
+			}
+			id := ids[0]
+			err := m.RemoveMember(id)
+			if err != nil {
+				log.Println("Something went wrong")
+			}
 		}
 	})
 }

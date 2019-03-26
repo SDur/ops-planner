@@ -88,3 +88,8 @@ func (p *pgDb) InsertMember(newMember *model.Member) error {
 	_, e := p.dbConn.Exec("INSERT INTO members (firstname, lastname) VALUES ($1, $2)", newMember.Firstname, newMember.Lastname)
 	return e
 }
+
+func (p *pgDb) DeleteMember(id int) error {
+	_, e := p.dbConn.Exec("DELETE FROM members where id=$1", id)
+	return e
+}
