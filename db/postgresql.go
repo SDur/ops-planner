@@ -59,10 +59,9 @@ func (p *pgDb) prepareSqlStatements() (err error) {
 	return nil
 }
 
-func (p *pgDb) SelectCurrentSprint() ([]*model.Member, error) {
-	people := make([]*model.Member, 0)
-	if err := p.sqlSelectMembers.Select(&people); err != nil {
-		return nil, err
-	}
-	return people, nil
+func (p *pgDb) SelectCurrentSprint() *model.Sprint {
+	row := p.dbConn.QueryRowx("SELECT * FROM sprints LIMIT 1")
+	var s model.Sprint
+	row.StructScan(&s)
+	return &s
 }
