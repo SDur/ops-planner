@@ -6,6 +6,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/SDur/ops-planner/model"
@@ -93,7 +94,7 @@ func membersHandler(m *model.Model) http.Handler {
 
 			log.Println("Received new member: " + firstname + " " + lastname)
 			newMember := &model.Member{
-				Id:        nil,
+				Id:        0,
 				Firstname: firstname,
 				Lastname:  lastname}
 
@@ -107,7 +108,10 @@ func membersHandler(m *model.Model) http.Handler {
 				log.Println("Url Params are incomplete or missing")
 				return
 			}
-			id := ids[0]
+			id, ierr := strconv.Atoi(ids[0])
+			if ierr != nil {
+				log.Println("Error parsing url param to int")
+			}
 			err := m.RemoveMember(id)
 			if err != nil {
 				log.Println("Something went wrong")
