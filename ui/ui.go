@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"encoding/json"
 	"fmt"
 	"net"
 	"net/http"
@@ -22,6 +23,7 @@ func Start(cfg Config, m *model.Model, listener net.Listener) {
 
 	http.Handle("/", indexHandler(m))
 	http.Handle("/members", membersHandler(m))
+	http.Handle("/sprints", sprintsHandler(m))
 	http.Handle("/js/", http.FileServer(cfg.Assets))
 
 	go server.Serve(listener)
@@ -55,5 +57,18 @@ const indexHTML = `
 func indexHandler(m *model.Model) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, indexHTML)
+	})
+}
+
+func sprintsHandler(m *model.Model) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		sprint := m.CurrentSprint()
+		js, err := json.Marshal(sprint)
+		if err != nil {
+			http.Error(w, "This is a marshal error", http.StatusBadRequest)
+			return
+		}
+
+		fmt.Fprintf(w, string(js))
 	})
 }
