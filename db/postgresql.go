@@ -63,27 +63,24 @@ func (p *pgDb) prepareSqlStatements() (err error) {
 
 func (p *pgDb) SelectCurrentSprint() (*model.Sprint, error) {
 	row := p.dbConn.QueryRowx("SELECT * FROM sprints LIMIT 1")
-	var days [10]int
+	var days pq.Int64Array
 	var id int64
 	var nr int64
 	var start time.Time
 	if err := row.Scan(&id, &nr, &start, pq.Array(&days)); err != nil {
 		return nil, err
 	}
-	//if err := row.Scan(&start); err != nil {
-	//	return nil, err
-	//}
-	//if err := row.Scan(&id); err != nil {
-	//	return nil, err
-	//}
-	//if err := row.Scan(&nr); err != nil {
-	//	return nil, err
-	//}
+	var convertedDays [10]int64
+
+	for i, d := range days {
+		convertedDays[i] = d
+	}
+
 	s := &model.Sprint{
 		Id:    id,
 		Nr:    nr,
 		Start: start,
-		Days:  days,
+		Days:  convertedDays,
 	}
 	return s, nil
 }
