@@ -3,6 +3,8 @@ package db
 import (
 	"database/sql"
 	"github.com/SDur/ops-planner/model"
+	"github.com/lib/pq"
+	"time"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
@@ -61,10 +63,27 @@ func (p *pgDb) prepareSqlStatements() (err error) {
 
 func (p *pgDb) SelectCurrentSprint() (*model.Sprint, error) {
 	row := p.dbConn.QueryRowx("SELECT * FROM sprints LIMIT 1")
-	var s model.Sprint
-	err := row.StructScan(&s)
-	if err != nil {
+	var days [10]int
+	var id int64
+	var nr int64
+	var start time.Time
+	if err := row.Scan(pq.Array(&days)); err != nil {
 		return nil, err
 	}
-	return &s, nil
+	if err := row.Scan(&start); err != nil {
+		return nil, err
+	}
+	if err := row.Scan(&id); err != nil {
+		return nil, err
+	}
+	if err := row.Scan(&nr); err != nil {
+		return nil, err
+	}
+	s := &model.Sprint{
+		Id:    id,
+		Nr:    nr,
+		Start: start,
+		Days:  days,
+	}
+	return s, nil
 }
