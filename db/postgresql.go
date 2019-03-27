@@ -67,18 +67,18 @@ func (p *pgDb) SelectCurrentSprint() (*model.Sprint, error) {
 	var id int64
 	var nr int64
 	var start time.Time
-	if err := row.Scan(pq.Array(&days)); err != nil {
+	if err := row.Scan(pq.Array(&days), &start, &id, &nr); err != nil {
 		return nil, err
 	}
-	if err := row.Scan(&start); err != nil {
-		return nil, err
-	}
-	if err := row.Scan(&id); err != nil {
-		return nil, err
-	}
-	if err := row.Scan(&nr); err != nil {
-		return nil, err
-	}
+	//if err := row.Scan(&start); err != nil {
+	//	return nil, err
+	//}
+	//if err := row.Scan(&id); err != nil {
+	//	return nil, err
+	//}
+	//if err := row.Scan(&nr); err != nil {
+	//	return nil, err
+	//}
 	s := &model.Sprint{
 		Id:    id,
 		Nr:    nr,
