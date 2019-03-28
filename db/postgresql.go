@@ -63,7 +63,7 @@ func (p *pgDb) prepareSqlStatements() (err error) {
 
 func (p *pgDb) SelectCurrentSprint() (*model.Sprint, error) {
 	row := p.dbConn.QueryRowx("SELECT * FROM sprints LIMIT 1")
-	var days pq.Int64Array
+	var days []sql.NullInt64
 	var id int64
 	var nr int64
 	var start time.Time
@@ -73,7 +73,7 @@ func (p *pgDb) SelectCurrentSprint() (*model.Sprint, error) {
 	var convertedDays [10]int64
 
 	for i, d := range days {
-		convertedDays[i] = d
+		convertedDays[i] = int64(d.Int64)
 	}
 
 	s := &model.Sprint{
