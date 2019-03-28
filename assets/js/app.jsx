@@ -84,7 +84,6 @@ class MembersList extends React.Component {
   }
 
   componentDidMount() {
-    this.serverRequest =
       axios
         .get("/members")
         .then((result) => {
@@ -113,11 +112,74 @@ class MembersList extends React.Component {
   }
 }
 
+class Sprint extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { sprint: {Days: []} };
+    }
+
+    componentDidMount() {
+            axios
+                .get("/sprints")
+                .then((result) => {
+                    console.log('Received sprint: ' + result.data);
+                    var startDate = new Date(result.data.Start);
+                    console.log('Set startdate: ' + startDate);
+                    this.setState({ sprint: result.data, startDate: startDate });
+                });
+    }
+
+    render() {
+        const dateRow = this.state.sprint.Days.map((day, i) => {
+            let daysToAdd = i;
+            if(i > 0) {
+                daysToAdd += 2;
+            }
+            if(i > 5) {
+                daysToAdd += 2;
+            }
+            console.log('adding amount: ' + daysToAdd);
+            let date = new Date(this.state.startDate);
+            date.setDate(date.getDate() + daysToAdd);
+            return (
+                <th>{date.getDate() + ' ' + date.getMonth()}</th>
+            );
+        });
+        const memberRow = this.state.sprint.Days.map((day, i) => {
+            return (
+                <td>{day}</td>
+            );
+        });
+
+        return (
+            <div>
+                <table>
+                    <thead>
+                    <tr>Sprint nr: [{this.state.sprint.Nr}] gestart op: [{this.state.sprint.Start}]</tr>
+                    <tr>
+                        <th>vrijdag</th><th>maandag</th><th>dinsdag</th><th>woensdag</th><th>donderdag</th><th>vrijdag</th><th>maandag</th><th>dinsdag</th><th>woensdag</th><th>donderdag</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        {dateRow}
+                    </tr>
+                    <tr>
+                        {memberRow}
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        );
+    }
+}
+
 class Container extends React.Component {
     render() {
         return (
             <div>
                 <MembersList/>
+                <Sprint/>
             </div>
         );
     }
