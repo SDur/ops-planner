@@ -73,7 +73,7 @@
           "type": "Git",
           "git": {
             "uri": "https://github.com/SDur/ops-planner",
-            "ref": "https://github.com/SDur/ops-planner"
+            "ref": "master"
           },
           "contextDir": "${CONTEXT_DIR}"
         },
