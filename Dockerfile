@@ -9,4 +9,8 @@ COPY . /go/src/github.com/SDur/ops-planner
 RUN go mod init
 RUN go build
 
-CMD ["./golang-ex"]
+# This container exposes port 8080 to the outside world
+EXPOSE 8080
+
+# Run the executable
+CMD ["ops-planner"]
