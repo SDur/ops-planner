@@ -80,20 +80,10 @@ class MemberForm extends React.Component {
 class MembersList extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { members: [] };
-  }
-
-  componentDidMount() {
-      axios
-        .get("/members")
-        .then((result) => {
-            console.log('Received members: ' + result.data);
-           this.setState({ members: result.data });
-        });
   }
 
   render() {
-    const members = this.state.members.map((member, i) => {
+    const members = this.props.members.map((member, i) => {
       return (
         <MemberItem key={i} id={member.Id} firstname={member.Firstname} lastname={member.Lastname} />
       );
@@ -112,11 +102,59 @@ class MembersList extends React.Component {
   }
 }
 
+class Modal extends React.Component {
+    constructor(props) {
+        super(props)
+    }
+    render() {
+        let members = this.props.members.map(m => {
+            return (
+                <tr onClick={this.props.handleChoice.bind(undefined, m.Id)}>
+                    <td> {m.Id}    </td>
+                    <td> {m.Firstname} </td>
+                    <td> {m.Lastname}  </td>
+                </tr>
+            );
+        });
+        return (
+            <div className={this.props.show ? "modal display-block" : "modal display-none"}>
+                <section className="modal-main">
+                    <div>
+                        <table><tbody>
+                        <tr><th>Id</th><th>Firstname</th><th>Lastname</th></tr>
+                        {members}
+                        </tbody></table>
+                    </div>
+                    <button onClick={this.props.handleClose}>close</button>
+                </section>
+            </div>
+        );
+    }
+};
+
 class Sprint extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { sprint: {Days: []} };
+        this.state = { sprint: {Days: []}, showModal: false, modalDay: 0 };
+        this.chooseMember = this.chooseMember.bind(this);
     }
+
+    showModal = (day) => {
+        console.log('Show modal: ' + day);
+        this.setState({ showModal: true, modalDay: day });
+    };
+
+    hideModal = () => {
+        this.setState({ showModal: false });
+    };
+
+    chooseMember(memberId) {
+        console.log('Choose member: ' + memberId);
+        console.log('Choose member for day: ' + this.state.modalDay);
+        let s = this.state.sprint;
+        s.Days[this.state.modalDay] = memberId;
+        this.setState({ sprint: s })
+    };
 
     componentDidMount() {
             axios
@@ -138,24 +176,29 @@ class Sprint extends React.Component {
             if(i > 5) {
                 daysToAdd += 2;
             }
-            console.log('adding amount: ' + daysToAdd);
+            // console.log('adding amount: ' + daysToAdd);
             let date = new Date(this.state.startDate);
             date.setDate(date.getDate() + daysToAdd);
             return (
                 <th>{date.getDate() + ' ' + date.getMonth()}</th>
             );
         });
+
         const memberRow = this.state.sprint.Days.map((day, i) => {
+            let member = this.props.members.filter(m => m.Id == day);
             return (
-                <td>{day}</td>
+                <td onClick={this.showModal.bind(undefined, i)}>{member[0] ? member[0].Firstname : ' '}</td>
             );
         });
 
         return (
             <div>
+                <Modal show={this.state.showModal} handleClose={this.hideModal} handleChoice={this.chooseMember.bind(this)}
+                       members={this.props.members}>
+                </Modal>
                 <table>
                     <thead>
-                    <tr>Sprint nr: [{this.state.sprint.Nr}] gestart op: [{this.state.sprint.Start}]</tr>
+                    <tr style={{width: '500px'}}>Sprint nr: [{this.state.sprint.Nr}] gestart op: [{this.state.sprint.Start}]</tr>
                     <tr>
                         <th>vrijdag</th><th>maandag</th><th>dinsdag</th><th>woensdag</th><th>donderdag</th><th>vrijdag</th><th>maandag</th><th>dinsdag</th><th>woensdag</th><th>donderdag</th>
                     </tr>
@@ -175,11 +218,27 @@ class Sprint extends React.Component {
 }
 
 class Container extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            members: []
+        }
+    }
+
+    componentDidMount() {
+        axios
+            .get("/members")
+            .then((result) => {
+                console.log('Received members: ' + result.data);
+                this.setState({ members: result.data });
+            });
+    }
+
     render() {
         return (
             <div>
-                <MembersList/>
-                <Sprint/>
+                <MembersList members={this.state.members}/>
+                <Sprint members={this.state.members}/>
             </div>
         );
     }
