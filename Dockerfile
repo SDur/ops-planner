@@ -5,8 +5,8 @@ USER nobody
 RUN mkdir -p /go/src/github.com/SDur/ops-planner
 WORKDIR /go/src/github.com/SDur/ops-planner
 
-COPY . /go/src/github.com/SDur/ops-planner
-RUN go mod init
+COPY . .
+RUN go get -d -v ./...
 RUN go build
 
 # This container exposes port 8080 to the outside world
