@@ -15,7 +15,7 @@ RUN go get -d -v ./...
 RUN go install -v ./...
 
 # This container exposes port 8080 to the outside world
-EXPOSE 3000
+EXPOSE 8080
 
 # Run the executable
 CMD ["ops-planner"]
