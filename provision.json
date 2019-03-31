@@ -121,7 +121,7 @@
             "imageChangeParams": {
               "automatic": true,
               "containerNames": [
-                "beego-example"
+                "ops-planner"
               ],
               "from": {
                 "kind": "ImageStreamTag",
