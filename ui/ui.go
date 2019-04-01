@@ -40,7 +40,7 @@ func Start(cfg Config, m *model.Model) {
 	})
 
 	// Start server
-	e.Logger.Fatal(e.Start(":1323"))
+	e.Logger.Fatal(e.Start(":8080"))
 }
 
 const (
