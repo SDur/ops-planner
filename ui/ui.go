@@ -3,31 +3,45 @@ package ui
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/labstack/echo"
 	"log"
-	"net"
 	"net/http"
-	"time"
 
 	"github.com/SDur/ops-planner/model"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 type Config struct {
 	Assets http.FileSystem
 }
 
-func Start(cfg Config, m *model.Model, listener net.Listener) {
+func Start(cfg Config, m *model.Model) {
 
-	server := &http.Server{
-		ReadTimeout:    60 * time.Second,
-		WriteTimeout:   60 * time.Second,
-		MaxHeaderBytes: 1 << 16}
+	//server := &http.Server{
+	//	ReadTimeout:    60 * time.Second,
+	//	WriteTimeout:   60 * time.Second,
+	//	MaxHeaderBytes: 1 << 16}
 
-	http.Handle("/", indexHandler(m))
-	http.Handle("/members", membersHandler(m))
-	http.Handle("/sprints", sprintsHandler(m))
-	http.Handle("/js/", http.FileServer(cfg.Assets))
+	//http.Handle("/", indexHandler(m))
+	//http.Handle("/members", membersHandler(m))
+	//http.Handle("/sprints", sprintsHandler(m))
+	//http.Handle("/js/", http.FileServer(cfg.Assets))
 
-	go server.Serve(listener)
+	// Echo instance
+	e := echo.New()
+
+	// Middleware
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+
+	// Routes
+	e.GET("/", func(c echo.Context) error {
+		return c.String(http.StatusOK, indexHTML)
+	})
+
+	// Start server
+	e.Logger.Fatal(e.Start(":1323"))
 }
 
 const (
@@ -56,11 +70,17 @@ const indexHTML = `
 </html>
 `
 
-func indexHandler(m *model.Model) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, indexHTML)
-	})
-}
+//func indexHandler(m *model.Model) http.Handler {
+//	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+//		fmt.Fprintf(w, indexHTML)
+//	})
+//}
+// Handler
+//func indexHandler(m *model.Model) echo.HandlerFunc {
+//	return echo.HandlerFunc(func(c echo.Context) {
+//		return c.String(http.StatusOK, indexHTML)
+//	})
+//}
 
 func sprintsHandler(m *model.Model) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
