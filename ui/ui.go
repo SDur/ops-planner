@@ -36,7 +36,7 @@ func Start(cfg Config, m *model.Model) {
 
 	// Routes
 	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, indexHTML)
+		return c.HTML(http.StatusOK, indexHTML)
 	})
 
 	// Start server
