@@ -14,6 +14,27 @@
   },
   "objects": [
     {
+      "kind": "ImageStreamImport",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "go-toolset"
+      },
+      "spec": {
+        "import": true,
+        "images": [
+          {
+            "from": {
+              "kind": "DockerImage",
+              "name": "centos/go-toolset-7-centos7:latest"
+            },
+            "to": {
+              "name": "latest"
+            }
+          }]
+      }
+
+    },
+    {
       "kind": "Service",
       "apiVersion": "v1",
       "metadata": {
@@ -81,7 +102,7 @@
           "sourceStrategy": {
             "from": {
               "kind": "ImageStreamTag",
-              "name": "centos/go-toolset-7-centos7:latest"
+              "name": "go-toolset:latest"
             }
           }
         },
