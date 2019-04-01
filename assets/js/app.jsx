@@ -85,7 +85,7 @@ class MembersList extends React.Component {
   render() {
     const members = this.props.members.map((member, i) => {
       return (
-        <MemberItem key={i} id={member.Id} firstname={member.Firstname} lastname={member.Lastname} />
+        <MemberItem key={i} id={member.id} firstname={member.firstname} lastname={member.lastname} />
       );
     });
 
@@ -109,10 +109,10 @@ class Modal extends React.Component {
     render() {
         let members = this.props.members.map(m => {
             return (
-                <tr onClick={this.props.handleChoice.bind(undefined, m.Id)}>
-                    <td> {m.Id}    </td>
-                    <td> {m.Firstname} </td>
-                    <td> {m.Lastname}  </td>
+                <tr onClick={this.props.handleChoice.bind(undefined, m.id)}>
+                    <td> {m.id}    </td>
+                    <td> {m.firstname} </td>
+                    <td> {m.lastname}  </td>
                 </tr>
             );
         });
@@ -185,9 +185,9 @@ class Sprint extends React.Component {
         });
 
         const memberRow = this.state.sprint.Days.map((day, i) => {
-            let member = this.props.members.filter(m => m.Id == day);
+            let member = this.props.members.filter(m => m.id == day);
             return (
-                <td onClick={this.showModal.bind(undefined, i)}>{member[0] ? member[0].Firstname : ' '}</td>
+                <td onClick={this.showModal.bind(undefined, i)}>{member[0] ? member[0].firstname : ' '}</td>
             );
         });
 

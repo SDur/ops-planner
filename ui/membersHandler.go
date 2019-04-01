@@ -16,12 +16,7 @@ func getMembersHandler(m *model.Model) echo.HandlerFunc {
 		if err != nil {
 			c.Error(err)
 		}
-		js, err := json.Marshal(members)
-		if err != nil {
-			c.Error(err)
-			//http.Error(w, "This is an error", http.StatusBadRequest)
-		}
-		return c.JSON(http.StatusOK, js)
+		return c.JSON(http.StatusOK, members)
 	}
 }
 
