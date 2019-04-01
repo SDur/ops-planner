@@ -35,9 +35,7 @@ func Start(cfg Config, m *model.Model) {
 	e.Use(middleware.Recover())
 
 	// Routes
-	e.GET("/", func(c echo.Context) error {
-		return c.HTML(http.StatusOK, indexHTML)
-	})
+	e.GET("/", indexHandler(m))
 
 	e.File("/js/app.jsx", "assets/js/app.jsx")
 	e.File("/js/style.css", "assets/js/style.css")
@@ -72,17 +70,11 @@ const indexHTML = `
 </html>
 `
 
-//func indexHandler(m *model.Model) http.Handler {
-//	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-//		fmt.Fprintf(w, indexHTML)
-//	})
-//}
-// Handler
-//func indexHandler(m *model.Model) echo.HandlerFunc {
-//	return echo.HandlerFunc(func(c echo.Context) {
-//		return c.String(http.StatusOK, indexHTML)
-//	})
-//}
+func indexHandler(m *model.Model) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		return c.HTML(http.StatusOK, indexHTML)
+	}
+}
 
 func sprintsHandler(m *model.Model) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
