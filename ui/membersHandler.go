@@ -4,10 +4,26 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/SDur/ops-planner/model"
+	"github.com/labstack/echo"
 	"log"
 	"net/http"
 	"strconv"
 )
+
+func getMembersHandler(m *model.Model) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		members, err := m.Members()
+		if err != nil {
+			c.Error(err)
+		}
+		js, err := json.Marshal(members)
+		if err != nil {
+			c.Error(err)
+			//http.Error(w, "This is an error", http.StatusBadRequest)
+		}
+		return c.JSON(http.StatusOK, js)
+	}
+}
 
 func membersHandler(m *model.Model) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
