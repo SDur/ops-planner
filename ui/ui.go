@@ -39,6 +39,9 @@ func Start(cfg Config, m *model.Model) {
 		return c.HTML(http.StatusOK, indexHTML)
 	})
 
+	e.File("/js/app.jsx", "assets/js/app.jsx")
+	e.File("/js/style.css", "assets/js/style.css")
+
 	// Start server
 	e.Logger.Fatal(e.Start(":8080"))
 }
