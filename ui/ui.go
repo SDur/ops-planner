@@ -1,8 +1,6 @@
 package ui
 
 import (
-	"encoding/json"
-	"fmt"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"log"
@@ -39,6 +37,7 @@ func Start(cfg Config, m *model.Model) {
 	e.GET("/members", getMembersHandler(m))
 	e.PUT("/members", putMembersHandler(m))
 	e.DELETE("/members", deleteMembersHandler(m))
+	e.GET("/sprints", sprintsHandler(m))
 
 	e.File("/js/app.jsx", "assets/js/app.jsx")
 	e.File("/js/style.css", "assets/js/style.css")
@@ -79,20 +78,18 @@ func indexHandler(m *model.Model) echo.HandlerFunc {
 	}
 }
 
-func sprintsHandler(m *model.Model) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+func sprintsHandler(m *model.Model) echo.HandlerFunc {
+	return func(c echo.Context) error {
 		sprint, err1 := m.CurrentSprint()
 		if err1 != nil {
 			log.Println(err1)
-			http.Error(w, "This is a db parsing error", http.StatusInternalServerError)
-			return
+			c.Error(err1)
 		}
-		js, err2 := json.Marshal(sprint)
-		if err2 != nil {
-			http.Error(w, "This is a marshal error", http.StatusBadRequest)
-			return
-		}
-
-		fmt.Fprintf(w, string(js))
-	})
+		//js, err2 := json.Marshal(sprint)
+		//if err2 != nil {
+		//	http.Error(w, "This is a marshal error", http.StatusBadRequest)
+		//	return
+		//}
+		return c.JSON(http.StatusOK, sprint)
+	}
 }
