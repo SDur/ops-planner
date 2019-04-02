@@ -54,7 +54,7 @@ class MemberForm extends React.Component {
         console.info('A new member is added: ' + this.state.firstname + ' ' + this.state.lastname);
         event.preventDefault();
         axios
-            .post("/members", null, {
+            .put("/members", null, {
                 params: {
                     firstname: this.state.firstname,
                     lastname: this.state.lastname

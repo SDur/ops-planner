@@ -37,6 +37,8 @@ func Start(cfg Config, m *model.Model) {
 	// Routes
 	e.GET("/", indexHandler(m))
 	e.GET("/members", getMembersHandler(m))
+	e.PUT("/members", putMembersHandler(m))
+	e.DELETE("/members", deleteMembersHandler(m))
 
 	e.File("/js/app.jsx", "assets/js/app.jsx")
 	e.File("/js/style.css", "assets/js/style.css")
