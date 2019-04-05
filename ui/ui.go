@@ -88,6 +88,9 @@ func postSprintsHandler(m *model.Model) echo.HandlerFunc {
 		}
 		log.Println("Received update for sprint: ")
 		log.Println(s)
+		if err2 := m.SaveSprint(s); err2 != nil {
+			c.Error(err2)
+		}
 		return c.NoContent(204)
 	}
 }
