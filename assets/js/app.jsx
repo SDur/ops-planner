@@ -135,8 +135,9 @@ class Modal extends React.Component {
 class Sprint extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { sprint: {Days: []}, showModal: false, modalDay: 0 };
+        this.state = { sprint: {days: []}, showModal: false, modalDay: 0 };
         this.chooseMember = this.chooseMember.bind(this);
+        this.saveSprint = this.saveSprint.bind(this);
     }
 
     showModal = (day) => {
@@ -152,23 +153,31 @@ class Sprint extends React.Component {
         console.log('Choose member: ' + memberId);
         console.log('Choose member for day: ' + this.state.modalDay);
         let s = this.state.sprint;
-        s.Days[this.state.modalDay] = memberId;
+        s.days[this.state.modalDay] = memberId;
         this.setState({ sprint: s })
     };
+
+    saveSprint() {
+        axios
+            .post("/sprints", this.state.sprint)
+            .then((result) => {
+                console.log('Sprint succesfully updated' + result);
+            });
+    }
 
     componentDidMount() {
             axios
                 .get("/sprints")
                 .then((result) => {
                     console.log('Received sprint: ' + result.data);
-                    var startDate = new Date(result.data.Start);
+                    var startDate = new Date(result.data.start);
                     console.log('Set startdate: ' + startDate);
                     this.setState({ sprint: result.data, startDate: startDate });
                 });
     }
 
     render() {
-        const dateRow = this.state.sprint.Days.map((day, i) => {
+        const dateRow = this.state.sprint.days.map((day, i) => {
             let daysToAdd = i;
             if(i > 0) {
                 daysToAdd += 2;
@@ -184,7 +193,7 @@ class Sprint extends React.Component {
             );
         });
 
-        const memberRow = this.state.sprint.Days.map((day, i) => {
+        const memberRow = this.state.sprint.days.map((day, i) => {
             let member = this.props.members.filter(m => m.id == day);
             return (
                 <td onClick={this.showModal.bind(undefined, i)}>{member[0] ? member[0].firstname : ' '}</td>
@@ -198,7 +207,7 @@ class Sprint extends React.Component {
                 </Modal>
                 <table>
                     <thead>
-                    <tr style={{width: '500px'}}>Sprint nr: [{this.state.sprint.Nr}] gestart op: [{this.state.sprint.Start}]</tr>
+                    <tr><th colSpan={5}>Sprint nr: [{this.state.sprint.nr}] gestart op: [{this.state.sprint.start}]</th></tr>
                     <tr>
                         <th>vrijdag</th><th>maandag</th><th>dinsdag</th><th>woensdag</th><th>donderdag</th><th>vrijdag</th><th>maandag</th><th>dinsdag</th><th>woensdag</th><th>donderdag</th>
                     </tr>
@@ -212,6 +221,7 @@ class Sprint extends React.Component {
                     </tr>
                     </tbody>
                 </table>
+                <button onClick={this.saveSprint}>Save sprint</button>
             </div>
         );
     }

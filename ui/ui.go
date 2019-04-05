@@ -22,7 +22,7 @@ func Start(cfg Config, m *model.Model) {
 
 	//http.Handle("/", indexHandler(m))
 	//http.Handle("/members", membersHandler(m))
-	//http.Handle("/sprints", sprintsHandler(m))
+	//http.Handle("/sprints", getSprintsHandler(m))
 	//http.Handle("/js/", http.FileServer(cfg.Assets))
 
 	// Echo instance
@@ -37,7 +37,9 @@ func Start(cfg Config, m *model.Model) {
 	e.GET("/members", getMembersHandler(m))
 	e.PUT("/members", putMembersHandler(m))
 	e.DELETE("/members", deleteMembersHandler(m))
-	e.GET("/sprints", sprintsHandler(m))
+
+	e.GET("/sprints", getSprintsHandler(m))
+	e.POST("/sprints", postSprintsHandler(m))
 
 	e.File("/js/app.jsx", "assets/js/app.jsx")
 	e.File("/js/style.css", "assets/js/style.css")
@@ -78,18 +80,25 @@ func indexHandler(m *model.Model) echo.HandlerFunc {
 	}
 }
 
-func sprintsHandler(m *model.Model) echo.HandlerFunc {
+func postSprintsHandler(m *model.Model) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		s := new(model.Sprint)
+		if err := c.Bind(s); err != nil {
+			c.Error(err)
+		}
+		log.Println("Received update for sprint: ")
+		log.Println(s)
+		return c.NoContent(204)
+	}
+}
+
+func getSprintsHandler(m *model.Model) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		sprint, err1 := m.CurrentSprint()
 		if err1 != nil {
 			log.Println(err1)
 			c.Error(err1)
 		}
-		//js, err2 := json.Marshal(sprint)
-		//if err2 != nil {
-		//	http.Error(w, "This is a marshal error", http.StatusBadRequest)
-		//	return
-		//}
 		return c.JSON(http.StatusOK, sprint)
 	}
 }

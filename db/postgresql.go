@@ -84,3 +84,10 @@ func (p *pgDb) SelectCurrentSprint() (*model.Sprint, error) {
 	}
 	return s, nil
 }
+
+func (p *pgDb) UpdateSprint(sprint model.Sprint) error {
+	_, e := p.dbConn.Exec("UPDATE sprints SET days = $1 WHERE nr = $2",
+		pq.Array(sprint.Days),
+		sprint.Nr)
+	return e
+}
