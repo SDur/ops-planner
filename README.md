@@ -9,3 +9,8 @@ een hobby project in Go met een React frontend
 - creeer de db `opsdb`: `create database opsdb;`
 - run `go run main.go` 
 - met de volgende flag: `-db-connect "host=localhost dbname=opsdb user=postgres password=postgres sslmode=disable"`
+
+na de eerste keer draaien zijn de tables gecreeerd, 
+vervolgens kan er een sprint toegevoegd worden alsvolgt (met *psql*):
+- `\c opsdb`
+- `insert into sprints(nr, start, days) values(1, '2019-03-28', '{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1}');`
