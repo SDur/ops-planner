@@ -14,17 +14,6 @@ type Config struct {
 }
 
 func Start(cfg Config, m *model.Model) {
-
-	//server := &http.Server{
-	//	ReadTimeout:    60 * time.Second,
-	//	WriteTimeout:   60 * time.Second,
-	//	MaxHeaderBytes: 1 << 16}
-
-	//http.Handle("/", indexHandler(m))
-	//http.Handle("/members", membersHandler(m))
-	//http.Handle("/sprints", getSprintsHandler(m))
-	//http.Handle("/js/", http.FileServer(cfg.Assets))
-
 	// Echo instance
 	e := echo.New()
 
@@ -40,6 +29,7 @@ func Start(cfg Config, m *model.Model) {
 
 	e.GET("/sprints", getSprintsHandler(m))
 	e.POST("/sprints", postSprintsHandler(m))
+	e.PUT("/sprints", putSprintsHandler(m))
 
 	e.File("/js/app.jsx", "assets/js/app.jsx")
 	e.File("/js/style.css", "assets/js/style.css")
@@ -88,8 +78,23 @@ func postSprintsHandler(m *model.Model) echo.HandlerFunc {
 		}
 		log.Println("Received update for sprint: ")
 		log.Println(s)
-		if err2 := m.SaveSprint(s); err2 != nil {
-			c.Error(err2)
+		if err := m.SaveSprint(s); err != nil {
+			c.Error(err)
+		}
+		return c.NoContent(204)
+	}
+}
+
+func putSprintsHandler(m *model.Model) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		s := new(model.Sprint)
+		if err := c.Bind(s); err != nil {
+			c.Error(err)
+		}
+		log.Println("Received new sprint: ")
+		log.Println(s)
+		if err := m.AddSprint(s); err != nil {
+			c.Error(err)
 		}
 		return c.NoContent(204)
 	}
@@ -97,10 +102,10 @@ func postSprintsHandler(m *model.Model) echo.HandlerFunc {
 
 func getSprintsHandler(m *model.Model) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		sprint, err1 := m.CurrentSprint()
-		if err1 != nil {
-			log.Println(err1)
-			c.Error(err1)
+		sprint, err := m.CurrentSprint()
+		if err != nil {
+			log.Println(err)
+			c.Error(err)
 		}
 		return c.JSON(http.StatusOK, sprint)
 	}

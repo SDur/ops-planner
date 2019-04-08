@@ -62,7 +62,7 @@ func (p *pgDb) prepareSqlStatements() (err error) {
 }
 
 func (p *pgDb) SelectCurrentSprint() (*model.Sprint, error) {
-	row := p.dbConn.QueryRowx("SELECT * FROM sprints LIMIT 1")
+	row := p.dbConn.QueryRowx("SELECT * FROM sprints order by start desc LIMIT 1")
 	var days []sql.NullInt64
 	var id int64
 	var nr int64
@@ -89,5 +89,13 @@ func (p *pgDb) UpdateSprint(sprint *model.Sprint) error {
 	_, e := p.dbConn.Exec("UPDATE sprints SET days = $1 WHERE nr = $2",
 		pq.Array(sprint.Days),
 		sprint.Nr)
+	return e
+}
+
+func (p *pgDb) InsertSprint(sprint *model.Sprint) error {
+	_, e := p.dbConn.Exec("INSERT into sprints (nr, start, days) values ($1, $2, $3)",
+		sprint.Nr,
+		sprint.Start,
+		pq.Array(sprint.Days))
 	return e
 }

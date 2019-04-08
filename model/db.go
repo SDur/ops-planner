@@ -6,4 +6,5 @@ type db interface {
 	DeleteMember(id int) error
 	SelectCurrentSprint() (*Sprint, error)
 	UpdateSprint(sprint *Sprint) error
+	InsertSprint(sprint *Sprint) error
 }

@@ -29,3 +29,7 @@ func (m *Model) CurrentSprint() (*Sprint, error) {
 func (m *Model) SaveSprint(sprint *Sprint) error {
 	return m.UpdateSprint(sprint)
 }
+
+func (m *Model) AddSprint(sprint *Sprint) error {
+	return m.InsertSprint(sprint)
+}

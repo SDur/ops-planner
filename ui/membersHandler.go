@@ -41,12 +41,12 @@ func deleteMembersHandler(m *model.Model) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		idString := c.QueryParam("id")
 
-		id, erri := strconv.Atoi(idString)
-		if erri != nil {
+		id, err := strconv.Atoi(idString)
+		if err != nil {
 			log.Println("Error parsing url param to int")
-			c.Error(erri)
+			c.Error(err)
 		}
-		err := m.RemoveMember(id)
+		err = m.RemoveMember(id)
 		if err != nil {
 			log.Println("Something went wrong")
 			c.Error(err)
