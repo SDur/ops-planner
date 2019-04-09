@@ -91,6 +91,11 @@ func putSprintsHandler(m *model.Model) echo.HandlerFunc {
 		if err := c.Bind(s); err != nil {
 			c.Error(err)
 		}
+		for i := 0; i <= 9; i += 1 {
+			if s.Days[i] == 0 {
+				s.Days[i] = -1
+			}
+		}
 		log.Println("Received new sprint: ")
 		log.Println(s)
 		if err := m.AddSprint(s); err != nil {

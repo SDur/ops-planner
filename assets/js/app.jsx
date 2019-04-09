@@ -240,7 +240,7 @@ class SprintCreator extends React.Component {
     createSprint() {
         console.log(this.state);
         axios
-            .put("/sprints", {nr: this.state.nr, start: this.state.start, days: [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1] })
+            .put("/sprints", {nr: this.state.nr, start: this.state.start})
             .then((result) => {
                 console.log('New sprint successfuly created' + result);
             })
