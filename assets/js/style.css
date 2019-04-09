@@ -19,6 +19,9 @@ tr:hover {background-color: #eac4e8;}
 input[type=text] {
     background-color: #fbebfa;
 }
+input[type=number] {
+    background-color: #fbebfa;
+}
 
 #sprint-header {
     width: 500px;
