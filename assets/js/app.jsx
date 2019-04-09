@@ -251,11 +251,14 @@ class SprintCreator extends React.Component {
 
     render() {
         return (
-            <form onSubmit={this.createSprint}>
-                <input type="number" value={this.state.nr} onChange={this.handleNrChange} />
-                <input type="text" value={this.state.start} onChange={this.handleStartChange} />
-                <input type="submit" value="Submit" />
-            </form>
+            <div id={"sprint-creator"}>
+                <span>Create a new sprint: </span>
+                <form onSubmit={this.createSprint}>
+                    <input type="number" value={this.state.nr} onChange={this.handleNrChange} />
+                    <input type="text" value={this.state.start} onChange={this.handleStartChange} />
+                    <input type="submit" value="Submit" />
+                </form>
+            </div>
         )
     }
 }
