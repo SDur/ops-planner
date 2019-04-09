@@ -42,7 +42,6 @@ class MemberForm extends React.Component {
     }
 
     handleFirstnameChange(event) {
-        console.log('in firstname handler');
         this.setState({firstname: event.target.value});
     }
 
@@ -69,8 +68,8 @@ class MemberForm extends React.Component {
     render() {
         return (
             <form onSubmit={this.handleSubmit}>
-                <input type="text" value={this.state.value} onChange={this.handleFirstnameChange} />
-                <input type="text" value={this.state.value} onChange={this.handleLastnameChange} />
+                <input type="text" value={this.state.firstname} onChange={this.handleFirstnameChange} />
+                <input type="text" value={this.state.lastname} onChange={this.handleLastnameChange} />
                 <input type="submit" value="Submit" />
             </form>
         );
@@ -135,7 +134,7 @@ class Modal extends React.Component {
 class Sprint extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { sprint: {days: []}, showModal: false, modalDay: 0 };
+        this.state = { sprint: props.sprint, showModal: false, modalDay: 0 };
         this.chooseMember = this.chooseMember.bind(this);
         this.saveSprint = this.saveSprint.bind(this);
     }
@@ -152,7 +151,7 @@ class Sprint extends React.Component {
     chooseMember(memberId) {
         console.log('Choose member: ' + memberId);
         console.log('Choose member for day: ' + this.state.modalDay);
-        let s = this.state.sprint;
+        let s = this.props.sprint;
         s.days[this.state.modalDay] = memberId;
         this.setState({ sprint: s })
     };
@@ -165,19 +164,8 @@ class Sprint extends React.Component {
             });
     }
 
-    componentDidMount() {
-            axios
-                .get("/sprints")
-                .then((result) => {
-                    console.log('Received sprint: ' + result.data);
-                    var startDate = new Date(result.data.start);
-                    console.log('Set startdate: ' + startDate);
-                    this.setState({ sprint: result.data, startDate: startDate });
-                });
-    }
-
     render() {
-        const dateRow = this.state.sprint.days.map((day, i) => {
+        const dateRow = this.props.sprint.days.map((day, i) => {
             let daysToAdd = i;
             if(i > 0) {
                 daysToAdd += 2;
@@ -185,15 +173,14 @@ class Sprint extends React.Component {
             if(i > 5) {
                 daysToAdd += 2;
             }
-            // console.log('adding amount: ' + daysToAdd);
-            let date = new Date(this.state.startDate);
+            let date = new Date(this.props.sprint.start);
             date.setDate(date.getDate() + daysToAdd);
             return (
                 <th>{date.getDate() + ' ' + date.getMonth()}</th>
             );
         });
 
-        const memberRow = this.state.sprint.days.map((day, i) => {
+        const memberRow = this.props.sprint.days.map((day, i) => {
             let member = this.props.members.filter(m => m.id == day);
             return (
                 <td onClick={this.showModal.bind(undefined, i)}>{member[0] ? member[0].firstname : ' '}</td>
@@ -207,7 +194,7 @@ class Sprint extends React.Component {
                 </Modal>
                 <table>
                     <thead>
-                    <tr><th colSpan={5}>Sprint nr: [{this.state.sprint.nr}] gestart op: [{this.state.sprint.start}]</th></tr>
+                    <tr><th colSpan={5}>Sprint nr: [{this.props.sprint.nr}] gestart op: [{this.props.sprint.start}]</th></tr>
                     <tr>
                         <th>vrijdag</th><th>maandag</th><th>dinsdag</th><th>woensdag</th><th>donderdag</th><th>vrijdag</th><th>maandag</th><th>dinsdag</th><th>woensdag</th><th>donderdag</th>
                     </tr>
@@ -227,11 +214,58 @@ class Sprint extends React.Component {
     }
 }
 
+class SprintCreator extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {nr: props.sprint.nr, start: props.sprint.start};
+
+        this.handleNrChange = this.handleNrChange.bind(this);
+        this.handleStartChange = this.handleStartChange.bind(this);
+        this.createSprint = this.createSprint.bind(this);
+    }
+
+    handleNrChange(event) {
+        console.log("Received new nr value: " + event.target.value);
+        this.setState({nr: Number(event.target.value)});
+    }
+
+    handleStartChange(event) {
+        this.setState({start: event.target.value});
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({nr: nextProps.sprint.nr, start: nextProps.sprint.start});
+    }
+
+    createSprint() {
+        console.log(this.state);
+        axios
+            .put("/sprints", {nr: this.state.nr, start: this.state.start, days: [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1] })
+            .then((result) => {
+                console.log('New sprint successfuly created' + result);
+            })
+            .catch((err) => {
+                console.error(err);
+            })
+    }
+
+    render() {
+        return (
+            <form onSubmit={this.createSprint}>
+                <input type="number" value={this.state.nr} onChange={this.handleNrChange} />
+                <input type="text" value={this.state.start} onChange={this.handleStartChange} />
+                <input type="submit" value="Submit" />
+            </form>
+        )
+    }
+}
+
 class Container extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            members: []
+            members: [],
+            sprint: {days: []}
         }
     }
 
@@ -242,13 +276,21 @@ class Container extends React.Component {
                 console.log('Received members: ' + result.data);
                 this.setState({ members: result.data });
             });
+
+        axios
+            .get("/sprints")
+            .then((result) => {
+                console.log('Received sprint: ' + result.data);
+                this.setState({ sprint: result.data });
+            });
     }
 
     render() {
         return (
             <div>
                 <MembersList members={this.state.members}/>
-                <Sprint members={this.state.members}/>
+                <Sprint members={this.state.members} sprint={this.state.sprint}/>
+                <SprintCreator sprint={this.state.sprint}/>
             </div>
         );
     }
