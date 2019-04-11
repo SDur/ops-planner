@@ -24,7 +24,7 @@ func (m *Model) RemoveMember(id int) error {
 	return m.DeleteMember(id)
 }
 
-func (m *Model) getMemberForToday() (*Member, error) {
+func (m *Model) GetMemberForToday() (*Member, error) {
 	return m.GetMemberForDate(time.Now())
 }
 

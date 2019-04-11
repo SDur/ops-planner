@@ -2,6 +2,7 @@ package ui
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"net/http"
@@ -74,8 +75,18 @@ func indexHandler(m *model.Model) echo.HandlerFunc {
 
 func getSlackHandler(m *model.Model) echo.HandlerFunc {
 	return func(c echo.Context) error {
+		member, e := m.GetMemberForToday()
+		if e != nil {
+			c.Error(e)
+		}
 		webhook := "https://hooks.slack.com/services/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"
-		resp, err := http.Post(webhook, "application/json", bytes.NewBufferString(`{"text":"Buy cheese and bread for breakfast."}`))
+		var message string
+		if member != nil {
+			message = fmt.Sprintf(`{"text":"Member of today is: %s %s"}`, member.Firstname, member.Lastname)
+		} else {
+			message = fmt.Sprintf(`{"text":"Member of today is: unknown"}`)
+		}
+		resp, err := http.Post(webhook, "application/json", bytes.NewBufferString(message))
 
 		if err != nil {
 			c.Error(err)
