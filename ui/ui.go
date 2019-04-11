@@ -1,9 +1,9 @@
 package ui
 
 import (
+	"bytes"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-	"log"
 	"net/http"
 
 	"github.com/SDur/ops-planner/model"
@@ -30,6 +30,8 @@ func Start(cfg Config, m *model.Model) {
 	e.GET("/sprints", getSprintsHandler(m))
 	e.POST("/sprints", postSprintsHandler(m))
 	e.PUT("/sprints", putSprintsHandler(m))
+
+	e.GET("/slack", getSlackHandler(m))
 
 	e.File("/js/app.jsx", "assets/js/app.jsx")
 	e.File("/js/style.css", "assets/js/style.css")
@@ -70,48 +72,14 @@ func indexHandler(m *model.Model) echo.HandlerFunc {
 	}
 }
 
-func postSprintsHandler(m *model.Model) echo.HandlerFunc {
+func getSlackHandler(m *model.Model) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		s := new(model.Sprint)
-		if err := c.Bind(s); err != nil {
-			c.Error(err)
-		}
-		log.Println("Received update for sprint: ")
-		log.Println(s)
-		if err := m.SaveSprint(s); err != nil {
-			c.Error(err)
-		}
-		return c.NoContent(204)
-	}
-}
+		webhook := "https://hooks.slack.com/services/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"
+		resp, err := http.Post(webhook, "application/json", bytes.NewBufferString(`{"text":"Buy cheese and bread for breakfast."}`))
 
-func putSprintsHandler(m *model.Model) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		s := new(model.Sprint)
-		if err := c.Bind(s); err != nil {
-			c.Error(err)
-		}
-		for i := 0; i <= 9; i += 1 {
-			if s.Days[i] == 0 {
-				s.Days[i] = -1
-			}
-		}
-		log.Println("Received new sprint: ")
-		log.Println(s)
-		if err := m.AddSprint(s); err != nil {
-			c.Error(err)
-		}
-		return c.NoContent(204)
-	}
-}
-
-func getSprintsHandler(m *model.Model) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		sprint, err := m.CurrentSprint()
 		if err != nil {
-			log.Println(err)
 			c.Error(err)
 		}
-		return c.JSON(http.StatusOK, sprint)
+		return c.String(resp.StatusCode, "Message send")
 	}
 }
