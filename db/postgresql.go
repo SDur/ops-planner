@@ -79,7 +79,7 @@ func (p *pgDb) GetMemberForDate(date time.Time) (*model.Member, error) {
 			startCopy.Add(1 * time.Hour)
 		}
 	}
-	log.Printf("Day is %d nth day of the sprint")
+	log.Printf("Day is %d nth day of the sprint", sprintDay)
 	memberId := sprint.Days[sprintDay]
 	log.Printf("Member id is %d", memberId)
 	if memberId != -1 {

@@ -82,9 +82,9 @@ func getSlackHandler(m *model.Model) echo.HandlerFunc {
 		webhook := "https://hooks.slack.com/services/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"
 		var message string
 		if member != nil {
-			message = fmt.Sprintf(`{"text":"Member of today is: %s %s"}`, member.Firstname, member.Lastname)
+			message = fmt.Sprintf(`{"text":"Opser of today is: %s %s"}`, member.Firstname, member.Lastname)
 		} else {
-			message = fmt.Sprintf(`{"text":"Member of today is: unknown"}`)
+			message = fmt.Sprintf(`{"text":"Opser of today is: unknown"}`)
 		}
 		resp, err := http.Post(webhook, "application/json", bytes.NewBufferString(message))
 
