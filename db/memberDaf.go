@@ -14,10 +14,11 @@ func (p *pgDb) SelectMembers() ([]*model.Member, error) {
 }
 
 func (p *pgDb) SelectMember(id int64) (*model.Member, error) {
-	row := p.dbConn.QueryRowx("SELECT (firstname, lastname) FROM members where id = $1", id)
+	row := p.dbConn.QueryRow("SELECT (firstname, lastname) FROM members where id = $1", id)
 	var firstname string
 	var lastname string
 	if err := row.Scan(&firstname, &lastname); err != nil {
+		log.Println(err.Error())
 		return nil, err
 	}
 

@@ -85,6 +85,7 @@ func (p *pgDb) GetMemberForDate(date time.Time) (*model.Member, error) {
 	if memberId != -1 {
 		member, e := p.SelectMember(memberId)
 		if e != nil {
+			log.Println(e.Error())
 			return nil, e
 		}
 		log.Println("returning member")
