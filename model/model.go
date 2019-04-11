@@ -1,5 +1,7 @@
 package model
 
+import "time"
+
 type Model struct {
 	db
 }
@@ -20,6 +22,10 @@ func (m *Model) AddMember(newMember *Member) error {
 
 func (m *Model) RemoveMember(id int) error {
 	return m.DeleteMember(id)
+}
+
+func (m *Model) getMemberForToday() (*Member, error) {
+	return m.GetMemberForDate(time.Now())
 }
 
 func (m *Model) CurrentSprint() (*Sprint, error) {

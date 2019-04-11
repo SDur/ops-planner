@@ -10,6 +10,15 @@ func (p *pgDb) SelectMembers() ([]*model.Member, error) {
 	return people, nil
 }
 
+func (p *pgDb) SelectMember(id int64) (*model.Member, error) {
+	row := p.dbConn.QueryRowx("SELECT * FROM members where id = $1", id)
+	var result model.Member
+	if err := row.Scan(&result); err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
 func (p *pgDb) InsertMember(newMember *model.Member) error {
 	_, e := p.dbConn.Exec("INSERT INTO members (firstname, lastname) VALUES ($1, $2)", newMember.Firstname, newMember.Lastname)
 	return e

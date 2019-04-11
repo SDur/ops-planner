@@ -3,11 +3,10 @@ package db
 import (
 	"database/sql"
 	"github.com/SDur/ops-planner/model"
-	"github.com/lib/pq"
-	"time"
-
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+	"log"
+	"time"
 )
 
 type Config struct {
@@ -61,41 +60,34 @@ func (p *pgDb) prepareSqlStatements() (err error) {
 	return nil
 }
 
-func (p *pgDb) SelectCurrentSprint() (*model.Sprint, error) {
-	row := p.dbConn.QueryRowx("SELECT * FROM sprints order by start desc LIMIT 1")
-	var days []sql.NullInt64
-	var id int64
-	var nr int64
-	var start time.Time
-	if err := row.Scan(&id, &nr, &start, pq.Array(&days)); err != nil {
-		return nil, err
+func (p *pgDb) GetMemberForDate(date time.Time) (*model.Member, error) {
+	sprint, e := p.SelectCurrentSprint()
+	if e != nil {
+		return nil, e
 	}
-	var convertedDays [10]int64
+	days := date.Sub(sprint.Start).Hours() / 24
+	log.Printf("Given day is %f away from start of spring %s", days, sprint.Start)
 
-	for i, d := range days {
-		convertedDays[i] = int64(d.Int64)
+	startCopy := sprint.Start
+	var sprintDay = 0
+
+	for startCopy.Truncate(24 * time.Hour).Equal(date.Truncate(24 * time.Hour)) {
+		if startCopy.Weekday() == time.Saturday || startCopy.Weekday() == time.Sunday {
+			continue
+		} else {
+			sprintDay++
+			startCopy.Add(1 * time.Hour)
+		}
 	}
-
-	s := &model.Sprint{
-		Id:    id,
-		Nr:    nr,
-		Start: start,
-		Days:  convertedDays,
+	log.Printf("Day is %d nth day of the sprint")
+	memberId := sprint.Days[sprintDay]
+	log.Printf("Member id is %d", memberId)
+	if memberId != -1 {
+		member, e := p.SelectMember(memberId)
+		if e != nil {
+			return nil, e
+		}
+		return member, nil
 	}
-	return s, nil
-}
-
-func (p *pgDb) UpdateSprint(sprint *model.Sprint) error {
-	_, e := p.dbConn.Exec("UPDATE sprints SET days = $1 WHERE nr = $2",
-		pq.Array(sprint.Days),
-		sprint.Nr)
-	return e
-}
-
-func (p *pgDb) InsertSprint(sprint *model.Sprint) error {
-	_, e := p.dbConn.Exec("INSERT into sprints (nr, start, days) values ($1, $2, $3)",
-		sprint.Nr,
-		sprint.Start,
-		pq.Array(sprint.Days))
-	return e
+	return nil, nil
 }
