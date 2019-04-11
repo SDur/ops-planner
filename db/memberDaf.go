@@ -1,6 +1,9 @@
 package db
 
-import "github.com/SDur/ops-planner/model"
+import (
+	"github.com/SDur/ops-planner/model"
+	"log"
+)
 
 func (p *pgDb) SelectMembers() ([]*model.Member, error) {
 	people := make([]*model.Member, 0)
@@ -18,6 +21,7 @@ func (p *pgDb) SelectMember(id int64) (*model.Member, error) {
 		return nil, err
 	}
 
+	log.Printf("Result of db call: %s and %s", firstname, lastname)
 	result := model.Member{
 		Firstname: firstname,
 		Lastname:  lastname,
