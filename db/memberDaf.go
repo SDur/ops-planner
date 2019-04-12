@@ -16,20 +16,11 @@ func (p *pgDb) SelectMembers() ([]*model.Member, error) {
 
 func (p *pgDb) SelectMember(id int64) (*model.Member, error) {
 	row := p.dbConn.QueryRowx(fmt.Sprintf("SELECT * FROM members where id = %d", id))
-	var firstname string
-	var lastname string
 	var member model.Member
 	if err := row.StructScan(&member); err != nil {
 		log.Println(err.Error())
 		return nil, err
 	}
-
-	log.Printf("Result of db call: %s and %s", firstname, lastname)
-	log.Printf("Result of db call: %s ", member)
-	//result := model.Member{
-	//	Firstname: firstname,
-	//	Lastname:  lastname,
-	//}
 	return &member, nil
 }
 
