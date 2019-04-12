@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"github.com/SDur/ops-planner/model"
 	"log"
 )
@@ -14,20 +15,22 @@ func (p *pgDb) SelectMembers() ([]*model.Member, error) {
 }
 
 func (p *pgDb) SelectMember(id int64) (*model.Member, error) {
-	row := p.dbConn.QueryRow("SELECT (firstname, lastname) FROM members where id = $1", id)
+	row := p.dbConn.QueryRowx(fmt.Sprintf("SELECT * FROM members where id = %d", id))
 	var firstname string
 	var lastname string
-	if err := row.Scan(&firstname, &lastname); err != nil {
+	var member model.Member
+	if err := row.StructScan(&member); err != nil {
 		log.Println(err.Error())
 		return nil, err
 	}
 
 	log.Printf("Result of db call: %s and %s", firstname, lastname)
-	result := model.Member{
-		Firstname: firstname,
-		Lastname:  lastname,
-	}
-	return &result, nil
+	log.Printf("Result of db call: %s ", member)
+	//result := model.Member{
+	//	Firstname: firstname,
+	//	Lastname:  lastname,
+	//}
+	return &member, nil
 }
 
 func (p *pgDb) InsertMember(newMember *model.Member) error {
