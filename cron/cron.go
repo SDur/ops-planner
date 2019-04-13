@@ -10,6 +10,7 @@ import (
 )
 
 func Start(m *model.Model) {
+	log.Println("Starting cron job")
 	c := cron.New()
 	err := c.AddFunc("0 0 8 * * MON,TUE,WED,THU,FRI", func() {
 		sendOpser(m)
@@ -18,6 +19,7 @@ func Start(m *model.Model) {
 		log.Fatal("Couldnt init cron job")
 	}
 	c.Start()
+	log.Println("Cron job started")
 }
 
 func sendOpser(m *model.Model) {
