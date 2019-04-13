@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func Start(m *model.Model) {
+func StartCron(m *model.Model) {
 	log.Println("Starting cron job")
 	c := cron.New()
 	err := c.AddFunc("0 0 8 * * MON,TUE,WED,THU,FRI", func() {

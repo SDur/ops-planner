@@ -31,7 +31,7 @@ func Run(cfg *Config) error {
 	m := model.New(db)
 
 	ui.Start(cfg.UI, m)
-	cron.Start(m)
+	cron.StartCron(m)
 
 	waitForSignal()
 
