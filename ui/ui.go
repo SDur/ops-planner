@@ -75,22 +75,26 @@ func indexHandler(m *model.Model) echo.HandlerFunc {
 
 func getSlackHandler(m *model.Model) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		member, e := m.GetMemberForToday()
-		if e != nil {
-			c.Error(e)
-		}
-		webhook := "https://hooks.slack.com/services/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"
-		var message string
-		if member != nil {
-			message = fmt.Sprintf(`{"text":"Opser of today is: %s %s"}`, member.Firstname, member.Lastname)
-		} else {
-			message = fmt.Sprintf(`{"text":"Opser of today is: unknown"}`)
-		}
-		resp, err := http.Post(webhook, "application/json", bytes.NewBufferString(message))
-
+		member, err := m.GetMemberForToday()
 		if err != nil {
 			c.Error(err)
 		}
-		return c.String(resp.StatusCode, "Message send")
+		err = SendSlackMessage(member)
+		if err != nil {
+			c.Error(err)
+		}
+		return c.String(200, "Message send")
 	}
+}
+
+func SendSlackMessage(member *model.Member) error {
+	webhook := "https://hooks.slack.com/services/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"
+	var message string
+	if member != nil {
+		message = fmt.Sprintf(`{"text":"Opser of today is: %s %s"}`, member.Firstname, member.Lastname)
+	} else {
+		message = fmt.Sprintf(`{"text":"Opser of today is: unknown"}`)
+	}
+	_, err := http.Post(webhook, "application/json", bytes.NewBufferString(message))
+	return err
 }
