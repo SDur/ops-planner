@@ -1,6 +1,7 @@
 package daemon
 
 import (
+	"github.com/SDur/ops-planner/cron"
 	"log"
 	"os"
 	"os/signal"
@@ -30,6 +31,7 @@ func Run(cfg *Config) error {
 	m := model.New(db)
 
 	ui.Start(cfg.UI, m)
+	cron.Start(m)
 
 	waitForSignal()
 
