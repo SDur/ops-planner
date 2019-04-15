@@ -88,7 +88,7 @@ func (p *pgDb) GetMemberForDate(date time.Time) (*model.Member, error) {
 			log.Println(e.Error())
 			return nil, e
 		}
-		log.Println("returning member")
+		log.Printf("returning member %s %s", member.Firstname, member.Lastname)
 		return member, nil
 	}
 	return nil, nil
