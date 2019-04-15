@@ -19,7 +19,7 @@ func StartCron(m *model.Model) {
 	}
 	c.Start()
 	log.Println("Cron job started: ")
-	log.Println(c.Entries())
+	log.Println(c.Entries()[0])
 }
 
 func sendOpser(m *model.Model) {
