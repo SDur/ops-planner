@@ -11,7 +11,7 @@ import (
 
 func StartCron(m *model.Model) {
 	c := cron.New()
-	err := c.AddFunc("0 0 8 * * MON,TUE,WED,THU,FRI", func() {
+	err := c.AddFunc("0 0 6 * * MON,TUE,WED,THU,FRI", func() {
 		sendOpser(m)
 	})
 	if err != nil {

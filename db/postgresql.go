@@ -73,10 +73,10 @@ func (p *pgDb) GetMemberForDate(date time.Time) (*model.Member, error) {
 
 	for startCopy.Truncate(24 * time.Hour).Equal(date.Truncate(24 * time.Hour)) {
 		if startCopy.Weekday() == time.Saturday || startCopy.Weekday() == time.Sunday {
-			continue
+			startCopy.Add(24 * time.Hour)
 		} else {
 			sprintDay++
-			startCopy.Add(1 * time.Hour)
+			startCopy.Add(24 * time.Hour)
 		}
 	}
 	log.Printf("Day is %d nth day of the sprint", sprintDay)
