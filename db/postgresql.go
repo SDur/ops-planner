@@ -69,14 +69,18 @@ func (p *pgDb) GetMemberForDate(date time.Time) (*model.Member, error) {
 	log.Printf("Given day is %f away from start of spring %s", days, sprint.Start)
 
 	startCopy := sprint.Start
-	var sprintDay = 0
+	sprintDay := 0
 
-	for startCopy.Truncate(24 * time.Hour).Equal(date.Truncate(24 * time.Hour)) {
+	log.Println(startCopy.Truncate(24 * time.Hour).Equal(date.Truncate(24 * time.Hour)))
+
+	for !startCopy.Truncate(24 * time.Hour).Equal(date.Truncate(24 * time.Hour)) {
 		if startCopy.Weekday() == time.Saturday || startCopy.Weekday() == time.Sunday {
-			startCopy.Add(24 * time.Hour)
+			log.Println("In weekend")
+			startCopy = startCopy.Add(24 * time.Hour)
 		} else {
+			log.Println("Out weekend")
 			sprintDay++
-			startCopy.Add(24 * time.Hour)
+			startCopy = startCopy.Add(24 * time.Hour)
 		}
 	}
 	log.Printf("Day is %d nth day of the sprint", sprintDay)
