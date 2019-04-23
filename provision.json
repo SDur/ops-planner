@@ -42,7 +42,7 @@
         "name": "ops-planner"
       },
       "spec": {
-        "host": "ops-planner.web.liander.nl",
+        "host": "oost-ops-planner.web.liander.nl",
         "to": {
           "kind": "Service",
           "name": "ops-planner"
