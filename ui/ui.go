@@ -22,7 +22,7 @@ func Start(cfg Config, m *model.Model) {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"https://localhost", "http://localhost:8080"},
+		AllowOrigins: []string{"https://localhost", "http://localhost:8080", "http://localhost:8081"},
 		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
 	}))
 
@@ -32,7 +32,7 @@ func Start(cfg Config, m *model.Model) {
 	e.PUT("/members", putMembersHandler(m))
 	e.DELETE("/members", deleteMembersHandler(m))
 
-	e.GET("/sprints", getSprintsHandler(m))
+	e.GET("/sprints/latest", getSprintsHandler(m))
 	e.POST("/sprints", postSprintsHandler(m))
 	e.PUT("/sprints", putSprintsHandler(m))
 

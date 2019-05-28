@@ -44,7 +44,7 @@ func putSprintsHandler(m *model.Model) echo.HandlerFunc {
 
 func getSprintsHandler(m *model.Model) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		sprint, err := m.CurrentSprint()
+		sprint, err := m.LatestSprint()
 		if err != nil {
 			log.Println(err)
 			c.Error(err)

@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func (p *pgDb) SelectCurrentSprint() (*model.Sprint, error) {
+func (p *pgDb) SelectLatestSprint() (*model.Sprint, error) {
 	row := p.dbConn.QueryRowx("SELECT * FROM sprints order by start desc LIMIT 1")
 	var days []sql.NullInt64
 	var id int64

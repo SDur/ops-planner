@@ -281,7 +281,7 @@ class Container extends React.Component {
             });
 
         axios
-            .get("/sprints")
+            .get("/sprints/latest")
             .then((result) => {
                 console.log('Received sprint: ' + result.data);
                 this.setState({ sprint: result.data });

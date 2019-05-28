@@ -7,4 +7,5 @@ require (
 	github.com/labstack/echo v3.3.10+incompatible
 	github.com/labstack/echo/v4 v4.0.0
 	github.com/lib/pq v1.0.0
+	github.com/robfig/cron v0.0.0-20180505203441-b41be1df6967
 )

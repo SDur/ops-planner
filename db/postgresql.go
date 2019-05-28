@@ -61,7 +61,7 @@ func (p *pgDb) prepareSqlStatements() (err error) {
 }
 
 func (p *pgDb) GetMemberForDate(date time.Time) (*model.Member, error) {
-	sprint, e := p.SelectCurrentSprint()
+	sprint, e := p.SelectLatestSprint()
 	if e != nil {
 		return nil, e
 	}
