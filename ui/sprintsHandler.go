@@ -42,7 +42,7 @@ func putSprintsHandler(m *model.Model) echo.HandlerFunc {
 	}
 }
 
-func getSprintsHandler(m *model.Model) echo.HandlerFunc {
+func getLatestSprintsHandler(m *model.Model) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		sprint, err := m.LatestSprint()
 		if err != nil {
@@ -50,5 +50,16 @@ func getSprintsHandler(m *model.Model) echo.HandlerFunc {
 			c.Error(err)
 		}
 		return c.JSON(http.StatusOK, sprint)
+	}
+}
+
+func getSprintsHandler(m *model.Model) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		sprints, err := m.Sprints()
+		if err != nil {
+			log.Println(err)
+			c.Error(err)
+		}
+		return c.JSON(http.StatusOK, sprints)
 	}
 }

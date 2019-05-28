@@ -31,6 +31,40 @@ func (p *pgDb) SelectLatestSprint() (*model.Sprint, error) {
 	return s, nil
 }
 
+func (p *pgDb) SelectSprints() ([]*model.Sprint, error) {
+	rows, err := p.dbConn.Queryx("SELECT * FROM sprints")
+	if err != nil {
+		return nil, err
+	}
+
+	sprints := make([]*model.Sprint, 0)
+
+	for rows.Next() {
+		var days []sql.NullInt64
+		var id int64
+		var nr int64
+		var start time.Time
+		if err := rows.Scan(&id, &nr, &start, pq.Array(&days)); err != nil {
+			return nil, err
+		}
+		var convertedDays [10]int64
+
+		for i, d := range days {
+			convertedDays[i] = int64(d.Int64)
+		}
+
+		s := &model.Sprint{
+			Id:    id,
+			Nr:    nr,
+			Start: start,
+			Days:  convertedDays,
+		}
+
+		sprints = append(sprints, s)
+	}
+	return sprints, nil
+}
+
 func (p *pgDb) UpdateSprint(sprint *model.Sprint) error {
 	_, e := p.dbConn.Exec("UPDATE sprints SET days = $1 WHERE nr = $2",
 		pq.Array(sprint.Days),

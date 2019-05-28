@@ -8,6 +8,7 @@ type db interface {
 	DeleteMember(id int) error
 	GetMemberForDate(time time.Time) (*Member, error)
 	SelectLatestSprint() (*Sprint, error)
+	SelectSprints() ([]*Sprint, error)
 	UpdateSprint(sprint *Sprint) error
 	InsertSprint(sprint *Sprint) error
 }

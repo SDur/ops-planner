@@ -32,7 +32,8 @@ func Start(cfg Config, m *model.Model) {
 	e.PUT("/members", putMembersHandler(m))
 	e.DELETE("/members", deleteMembersHandler(m))
 
-	e.GET("/sprints/latest", getSprintsHandler(m))
+	e.GET("/sprints/latest", getLatestSprintsHandler(m))
+	e.GET("/sprints", getSprintsHandler(m))
 	e.POST("/sprints", postSprintsHandler(m))
 	e.PUT("/sprints", putSprintsHandler(m))
 

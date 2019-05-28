@@ -28,6 +28,10 @@ func (m *Model) GetMemberForToday() (*Member, error) {
 	return m.GetMemberForDate(time.Now())
 }
 
+func (m *Model) Sprints() ([]*Sprint, error) {
+	return m.SelectSprints()
+}
+
 func (m *Model) LatestSprint() (*Sprint, error) {
 	return m.SelectLatestSprint()
 }
