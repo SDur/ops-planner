@@ -45,6 +45,7 @@ func putSprintsHandler(m *model.Model) echo.HandlerFunc {
 
 func getLatestSprintsHandler(m *model.Model) echo.HandlerFunc {
 	return func(c echo.Context) error {
+		log.Println("Getting latest sprint")
 		sprint, err := m.LatestSprint()
 		if err != nil {
 			log.Println(err)
@@ -56,6 +57,7 @@ func getLatestSprintsHandler(m *model.Model) echo.HandlerFunc {
 
 func getSprintsHandler(m *model.Model) echo.HandlerFunc {
 	return func(c echo.Context) error {
+		log.Println("Getting all sprints")
 		sprints, err := m.Sprints()
 		if err != nil {
 			log.Println(err)
@@ -73,6 +75,7 @@ func deleteSprintHandler(m *model.Model) echo.HandlerFunc {
 			log.Println("Error parsing url param to int")
 			c.Error(err)
 		}
+		log.Println("Deleting sprint with id: %d", id)
 		err = m.RemoveSprint(id)
 		if err != nil {
 			log.Println("Something went wrong")
