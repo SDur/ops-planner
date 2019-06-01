@@ -22,7 +22,7 @@ func Start(cfg Config, m *model.Model) {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"https://localhost", "http://localhost:8080", "http://localhost:8081"},
+		AllowOrigins: []string{"https://localhost", "http://localhost:8080", "http://localhost:8081", "https://oost-ops-planner-app.web.liander.nl/"},
 		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
 	}))
 
