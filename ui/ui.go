@@ -36,6 +36,7 @@ func Start(cfg Config, m *model.Model) {
 	e.GET("/sprints", getSprintsHandler(m))
 	e.POST("/sprints", postSprintsHandler(m))
 	e.PUT("/sprints", putSprintsHandler(m))
+	e.DELETE("/sprints", deleteSprintHandler(m))
 
 	e.GET("/slack", getSlackHandler(m))
 

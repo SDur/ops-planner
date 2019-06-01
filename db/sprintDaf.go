@@ -79,3 +79,8 @@ func (p *pgDb) InsertSprint(sprint *model.Sprint) error {
 		pq.Array(sprint.Days))
 	return e
 }
+
+func (p *pgDb) DeleteSprint(id int) error {
+	_, e := p.dbConn.Exec("DELETE FROM sprints where id=$1", id)
+	return e
+}

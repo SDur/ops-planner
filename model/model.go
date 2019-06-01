@@ -43,3 +43,7 @@ func (m *Model) SaveSprint(sprint *Sprint) error {
 func (m *Model) AddSprint(sprint *Sprint) error {
 	return m.InsertSprint(sprint)
 }
+
+func (m *Model) RemoveSprint(id int) error {
+	return m.DeleteSprint(id)
+}

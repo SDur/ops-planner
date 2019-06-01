@@ -11,4 +11,5 @@ type db interface {
 	SelectSprints() ([]*Sprint, error)
 	UpdateSprint(sprint *Sprint) error
 	InsertSprint(sprint *Sprint) error
+	DeleteSprint(id int) error
 }

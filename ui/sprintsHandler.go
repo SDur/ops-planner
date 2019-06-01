@@ -5,6 +5,7 @@ import (
 	"github.com/labstack/echo"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func postSprintsHandler(m *model.Model) echo.HandlerFunc {
@@ -61,5 +62,22 @@ func getSprintsHandler(m *model.Model) echo.HandlerFunc {
 			c.Error(err)
 		}
 		return c.JSON(http.StatusOK, sprints)
+	}
+}
+
+func deleteSprintHandler(m *model.Model) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		idString := c.QueryParam("id")
+		id, err := strconv.Atoi(idString)
+		if err != nil {
+			log.Println("Error parsing url param to int")
+			c.Error(err)
+		}
+		err = m.RemoveSprint(id)
+		if err != nil {
+			log.Println("Something went wrong")
+			c.Error(err)
+		}
+		return c.String(http.StatusOK, "sprint deleted")
 	}
 }
