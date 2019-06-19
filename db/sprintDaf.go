@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"github.com/SDur/ops-planner/model"
 	"github.com/lib/pq"
+	"log"
 	"time"
 )
 
@@ -14,6 +15,31 @@ func (p *pgDb) SelectLatestSprint() (*model.Sprint, error) {
 	var nr int64
 	var start time.Time
 	if err := row.Scan(&id, &nr, &start, pq.Array(&days)); err != nil {
+		return nil, err
+	}
+	var convertedDays [10]int64
+
+	for i, d := range days {
+		convertedDays[i] = int64(d.Int64)
+	}
+
+	s := &model.Sprint{
+		Id:    id,
+		Nr:    nr,
+		Start: start,
+		Days:  convertedDays,
+	}
+	return s, nil
+}
+
+func (p *pgDb) SelectSprintForDate(date time.Time) (*model.Sprint, error) {
+	row := p.dbConn.QueryRow("SELECT * FROM sprints WHERE start < $1 ORDER BY start DESC LIMIT 1", date)
+	var days []sql.NullInt64
+	var id int64
+	var nr int64
+	var start time.Time
+	if err := row.Scan(&id, &nr, &start, pq.Array(&days)); err != nil {
+		log.Println(err)
 		return nil, err
 	}
 	var convertedDays [10]int64
