@@ -33,7 +33,7 @@ func (p *pgDb) SelectLatestSprint() (*model.Sprint, error) {
 }
 
 func (p *pgDb) SelectSprintForDate(date time.Time) (*model.Sprint, error) {
-	row := p.dbConn.QueryRow("SELECT * FROM sprints WHERE start < $1 ORDER BY start DESC LIMIT 1", date)
+	row := p.dbConn.QueryRow("SELECT * FROM sprints WHERE start <= $1 ORDER BY start DESC LIMIT 1", date)
 	var days []sql.NullInt64
 	var id int64
 	var nr int64
