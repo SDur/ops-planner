@@ -78,7 +78,7 @@ func (p *pgDb) GetMemberForDate(date time.Time) (*model.Member, error) {
 			log.Println("In weekend")
 			startCopy = startCopy.Add(24 * time.Hour)
 		} else {
-			log.Println("Out weekend")
+			log.Println("In week")
 			sprintDay++
 			startCopy = startCopy.Add(24 * time.Hour)
 		}
